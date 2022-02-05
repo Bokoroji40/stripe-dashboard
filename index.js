@@ -9,6 +9,11 @@ document.addEventListener("DOMContentLoaded", function (event) {
   signUpForm.onsubmit = signIn.bind(signUpForm);
 });
 
+supabase.auth.onAuthStateChange((event, session) => {
+  console.log("something happened here, woo");
+  console.log(event, session);
+});
+
 const signIn = (event) => {
   event.preventDefault();
   const email = event.target[0].value;
