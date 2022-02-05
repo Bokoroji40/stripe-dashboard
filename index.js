@@ -25,3 +25,11 @@ const signUpSubmitted = (event) => {
 
   console.log(response);
 };
+
+function setToken(response) {
+  if (response.user.confirmation_sent_at && !response?.session?.access_token) {
+    alert("Confirmation Email Sent");
+  } else {
+    alert("Logged in as " + response.user.email);
+  }
+}
