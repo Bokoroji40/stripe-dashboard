@@ -17,10 +17,10 @@ supabase.auth.onAuthStateChange(async (event, session) => {
       body: session,
     });
 
-    console.log(response);
+    console.log("the response here is this", response);
     return;
   }
-  console.log(event, session);
+  //   console.log(event, session);
 });
 
 const signIn = (event) => {
