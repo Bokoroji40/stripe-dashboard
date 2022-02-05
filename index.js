@@ -14,7 +14,7 @@ supabase.auth.onAuthStateChange(async (event, session) => {
   if ("SIGNED_IN" === event) {
     const response = await fetch("/.netlify/functions/generate-stripe-link", {
       method: "POST",
-      body: session,
+      body: JSON.stringify(session),
     });
 
     console.log("the response here is this", response.body.tee());
