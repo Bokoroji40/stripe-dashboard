@@ -1,8 +1,6 @@
 const crypto = require("crypto");
 
 exports.handler = async function (event, context) {
-  console.log("this is a thing here", JSON.stringify(event.body));
-
   accessToken = JSON.stringify(event.body);
   parts = accessToken.split(".");
 
@@ -10,14 +8,17 @@ exports.handler = async function (event, context) {
   payload = parts[1];
   signature = parts[2];
 
-  console.info("parts", header, payload, signature);
-
   const hash = crypto
     .createHmac("sha256", process.env.SUPA_JWT_SECRET)
     .update(header + "." + payload)
-    .digest("hex");
+    .digest("base64url");
 
-  console.log("hash, signature", hash, signature);
+  if (hash !== signature) {
+    return {
+      statusCode: 403,
+      body: JSON.stringify({ message: "jwt signature verification failed" }),
+    };
+  }
 
   return {
     statusCode: 200,
