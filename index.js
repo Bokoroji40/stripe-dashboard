@@ -6,7 +6,7 @@ var supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 document.addEventListener("DOMContentLoaded", function (event) {
   var signUpForm = document.querySelector("#sbform");
-  signUpForm.onsubmit = signUpSubmitted.bind(signUpForm);
+  signUpForm.onsubmit = signIn.bind(signUpForm);
 });
 
 const signIn = (event) => {
