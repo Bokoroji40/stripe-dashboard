@@ -1,4 +1,4 @@
-const { createHmac } = await import("crypto");
+const { createHmac } = import("crypto");
 
 exports.handler = async function (event, context) {
   console.log("this is a thing here", JSON.stringify(event.body));
