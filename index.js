@@ -15,7 +15,7 @@ const signUpSubmitted = (event) => {
   const email = event.target[0].value;
 
   supabase.auth
-    .signUp({ email })
+    .signIn({ email })
     .then((response) => {
       response.error ? alert(response.error.message) : setToken(response);
     })
