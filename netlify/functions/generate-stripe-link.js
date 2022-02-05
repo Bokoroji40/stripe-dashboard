@@ -1,6 +1,4 @@
-const base64 = require("base64url");
-
-exports.handler = async function (event, context) {
+export async function handler(event, context) {
   console.log("this is a thing here", JSON.stringify(event.body));
 
   accessToken = JSON.stringify({ message: event.body });
@@ -25,4 +23,4 @@ exports.handler = async function (event, context) {
     statusCode: 200,
     body: JSON.stringify({ message: event.body }),
   };
-};
+}
