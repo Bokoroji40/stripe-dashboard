@@ -17,7 +17,7 @@ supabase.auth.onAuthStateChange(async (event, session) => {
       body: session.access_token,
     });
 
-    console.log("the response here is this", response.body.tee());
+    console.log("the response here is this", response);
     return;
   }
   //   console.log(event, session);
