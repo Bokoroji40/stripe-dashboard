@@ -1,7 +1,7 @@
 exports.handler = async function (event, context) {
   console.log("this is a thing here", JSON.stringify(event.body));
 
-  accessToken = JSON.stringify({ message: event.body });
+  accessToken = JSON.stringify(event.body);
   parts = accessToken.split(".");
 
   header = parts[0];
