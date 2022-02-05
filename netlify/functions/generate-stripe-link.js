@@ -13,6 +13,15 @@ exports.handler = async function (event, context) {
     .update(header + "." + payload)
     .digest("base64url");
 
+  console.info(
+    "hash vs sig\n",
+    typeof hash,
+    hash,
+    "\n",
+    typeof signature,
+    signature,
+  );
+
   if (hash !== signature) {
     return {
       statusCode: 403,
