@@ -1,4 +1,4 @@
-const { createHmac } = import("crypto");
+const crypto = require("crypto");
 
 exports.handler = async function (event, context) {
   console.log("this is a thing here", JSON.stringify(event.body));
@@ -12,7 +12,8 @@ exports.handler = async function (event, context) {
 
   console.info("parts", header, payload, signature);
 
-  const hash = createHmac("sha256", process.env.SUPA_JWT_SECRET)
+  const hash = crypto
+    .createHmac("sha256", process.env.SUPA_JWT_SECRET)
     .update(header + "." + payload)
     .digest("hex");
 
