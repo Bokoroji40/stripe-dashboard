@@ -1,4 +1,4 @@
-export async function handler(event, context) {
+exports.handler = async function (event, context) {
   console.log("this is a thing here", JSON.stringify(event.body));
 
   accessToken = JSON.stringify({ message: event.body });
@@ -23,4 +23,4 @@ export async function handler(event, context) {
     statusCode: 200,
     body: JSON.stringify({ message: event.body }),
   };
-}
+};
