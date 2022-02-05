@@ -1,7 +1,7 @@
 const crypto = require("crypto");
 
 exports.handler = async function (event, context) {
-  accessToken = JSON.stringify(event.body);
+  accessToken = event.body;
   parts = accessToken.split(".");
 
   header = parts[0];
