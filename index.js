@@ -15,11 +15,13 @@ const signUpSubmitted = (event) => {
   const email = event.target[0].value;
 
   supabase.auth
-    .signUp({ email, password })
+    .signUp({ email })
     .then((response) => {
       response.error ? alert(response.error.message) : setToken(response);
     })
     .catch((err) => {
       alert(err);
     });
+
+  console.log(response);
 };
