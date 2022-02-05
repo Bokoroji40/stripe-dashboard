@@ -9,21 +9,20 @@ document.addEventListener("DOMContentLoaded", function (event) {
   signUpForm.onsubmit = signUpSubmitted.bind(signUpForm);
 });
 
-const signUpSubmitted = (event) => {
+const signIn = (event) => {
   event.preventDefault();
-  console.log(event);
   const email = event.target[0].value;
 
   supabase.auth
     .signIn({ email })
     .then((response) => {
+      console.log(response);
+
       response.error ? alert(response.error.message) : setToken(response);
     })
     .catch((err) => {
-      alert(err);
+      alert(err.response.text);
     });
-
-  console.log(response);
 };
 
 function setToken(response) {
