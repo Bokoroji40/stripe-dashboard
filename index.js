@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
   signUpForm.onsubmit = signIn.bind(signUpForm);
 });
 
-supabase.auth.onAuthStateChange((event, session) => {
+supabase.auth.onAuthStateChange(async (event, session) => {
   console.log("something happened here, woo");
   if ("SIGNED_IN" === event) {
     const response = await fetch("/.netlify/functions/generate-stripe-link", {
