@@ -8,16 +8,13 @@ exports.handler = async function (event, context) {
   payload = parts[1];
   signature = parts[2];
 
-  decodedHeader = Buffer.from(header, "base64").toString("ascii");
-  decodedPayload = Buffer.from(payload, "base64").toString("ascii");
-  decodedSignature = Buffer.from(signature, "base64").toString("ascii");
+  console.info("parts", header, payload, signature);
 
-  console.log(
-    "decodeds",
-    JSON.stringify(decodedHeader),
-    JSON.stringify(decodedPayload),
-    JSON.stringify(decodedSignature),
-  );
+  decodedHeader = Buffer.from(header, "base64url").toString("ascii");
+  decodedPayload = Buffer.from(payload, "base64url").toString("ascii");
+  decodedSignature = Buffer.from(signature, "base64url").toString("ascii");
+
+  console.log("decodeds", decodedHeader, decodedPayload, decodedSignature);
 
   return {
     statusCode: 200,
