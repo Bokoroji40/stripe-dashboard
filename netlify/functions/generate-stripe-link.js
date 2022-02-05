@@ -1,3 +1,5 @@
+const { createHmac } = await import("crypto");
+
 exports.handler = async function (event, context) {
   console.log("this is a thing here", JSON.stringify(event.body));
 
@@ -10,11 +12,11 @@ exports.handler = async function (event, context) {
 
   console.info("parts", header, payload, signature);
 
-  decodedHeader = Buffer.from(header, "base64url").toString("ascii");
-  decodedPayload = Buffer.from(payload, "base64url").toString("ascii");
-  decodedSignature = Buffer.from(signature, "base64url").toString("ascii");
+  const hash = createHmac("sha256", process.env.SUPA_JWT_SECRET)
+    .update(header + "." + payload)
+    .digest("hex");
 
-  console.log("decodeds", decodedHeader, decodedPayload, decodedSignature);
+  console.log("hash, signature", hash, signature);
 
   return {
     statusCode: 200,
