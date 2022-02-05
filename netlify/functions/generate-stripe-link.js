@@ -1,5 +1,6 @@
 const crypto = require("crypto");
 const https = require("https");
+const stripe = require("stripe")(process.env.STRIPE_API_KEY);
 
 exports.handler = async function (event, context) {
   accessToken = event.body;
@@ -30,6 +31,18 @@ exports.handler = async function (event, context) {
     };
   }
 
+  const stripeID = await getStripeIDFromSupabase(accessToken);
+  const link = await getStripeSessionLink(stripeID);
+
+  console.log("this is the link that came back", link);
+
+  return {
+    statusCode: 200,
+    body: JSON.stringify({ message: event.body }),
+  };
+};
+
+const getStripeIDFromSupabase = async function (accessToken) {
   const req = https.request(
     "https://uavpsmlmcsfcplfxuubi.supabase.co/rest/v1/stripe_customers",
     {
@@ -40,14 +53,18 @@ exports.handler = async function (event, context) {
       },
     },
     (res) => {
+      let rdata = "";
       console.log(`STATUS: ${res.statusCode}`);
       console.log(`HEADERS: ${JSON.stringify(res.headers)}`);
       res.setEncoding("utf8");
       res.on("data", (chunk) => {
+        rdata += chunk;
         console.log(`BODY: ${chunk}`);
       });
       res.on("end", () => {
         console.log("No more data in response.");
+
+        return rdata;
       });
     },
   );
@@ -58,8 +75,14 @@ exports.handler = async function (event, context) {
 
   req.end();
 
-  return {
-    statusCode: 200,
-    body: JSON.stringify({ message: event.body }),
-  };
+  return "";
+};
+
+const getStripeSessionLink = async function (stripeID) {
+  const session = await stripe.billingPortal.sessions.create({
+    customer: stripeID,
+    return_url: "https://jovial-borg-90bf04.netlify.app/",
+  });
+
+  return session.url;
 };
