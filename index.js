@@ -17,7 +17,9 @@ supabase.auth.onAuthStateChange(async (event, session) => {
       body: session.access_token,
     });
 
-    console.log("the response here is this", response.json());
+    const result = await response.json();
+
+    console.log("the response here is this", result);
     return;
   }
   //   console.log(event, session);
