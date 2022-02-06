@@ -36,6 +36,8 @@ exports.handler = async function (event, context) {
 };
 
 const getStripeIDFromSupabase = async function (accessToken) {
+  console.log("starting axios await");
+  let custID = "";
   await axios
     .get("https://uavpsmlmcsfcplfxuubi.supabase.co/rest/v1/stripe_customers", {
       headers: {
@@ -44,6 +46,7 @@ const getStripeIDFromSupabase = async function (accessToken) {
       },
     })
     .then((response) => {
+      console.info("got a response");
       if (response.status !== 200) {
         throw new Error("response from supabase is not 200");
       }
@@ -55,13 +58,14 @@ const getStripeIDFromSupabase = async function (accessToken) {
       if (!response.data[0].stripe_customer_id) {
         throw new Error("stripe customer id is missing from response data");
       }
-
-      return response.data[0].stripe_customer_id;
+      console.info("hm, returning from here is bad, setting custid");
+      custID = response.data[0].stripe_customer_id;
     })
     .catch((error) => {
       console.error("so axios errored: ", error);
-      return "";
     });
+
+  return custID;
 };
 
 const getStripeSessionLink = async function (stripeID) {
