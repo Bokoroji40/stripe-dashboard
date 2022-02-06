@@ -22,6 +22,7 @@ exports.handler = async function (event, context) {
     };
   }
 
+  console.log("calling the stripeid func");
   const stripeID = await getStripeIDFromSupabase(accessToken);
 
   console.log("this is the stripe id", stripeID);
@@ -36,6 +37,7 @@ exports.handler = async function (event, context) {
 };
 
 const getStripeIDFromSupabase = async function (accessToken) {
+  console.warn("get stripe id from supabase has been called");
   axios
     .get("https://uavpsmlmcsfcplfxuubi.supabase.co/rest/v1/stripe_customers", {
       headers: {
@@ -49,6 +51,7 @@ const getStripeIDFromSupabase = async function (accessToken) {
     .catch((error) => {
       console.error("so axios errored: ", error);
     });
+  console.warn("got to the end of the axios func");
 };
 
 const getStripeSessionLink = async function (stripeID) {
