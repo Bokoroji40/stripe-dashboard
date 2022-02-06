@@ -74,11 +74,10 @@ const getStripeIDFromSupabase = async function (accessToken) {
 
   req.on("error", (e) => {
     console.error(`problem with request: ${e.message}`);
+    return "";
   });
 
   req.end();
-
-  return "";
 };
 
 const getStripeSessionLink = async function (stripeID) {
