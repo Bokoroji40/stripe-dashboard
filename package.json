@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "axios": "^0.25.0",
     "stripe": "^8.202.0"
   }
 }
