@@ -15,15 +15,6 @@ exports.handler = async function (event, context) {
     .update(header + "." + payload)
     .digest("base64url");
 
-  console.info(
-    "hash vs sig\n",
-    typeof hash,
-    hash,
-    "\n",
-    typeof signature,
-    signature,
-  );
-
   if (hash !== signature) {
     return {
       statusCode: 403,
@@ -32,9 +23,11 @@ exports.handler = async function (event, context) {
   }
 
   const stripeID = await getStripeIDFromSupabase(accessToken);
-  const link = await getStripeSessionLink(stripeID);
 
-  console.log("this is the link that came back", link);
+  console.log("this is the stripe id", stripeID);
+  //   const link = await getStripeSessionLink(stripeID);
+
+  //   console.log("this is the link that came back", link);
 
   return {
     statusCode: 200,
