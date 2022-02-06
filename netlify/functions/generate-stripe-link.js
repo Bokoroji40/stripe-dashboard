@@ -22,7 +22,6 @@ exports.handler = async function (event, context) {
     };
   }
 
-  console.log("calling the stripeid func");
   const stripeID = await getStripeIDFromSupabase(accessToken);
 
   console.log("this is the stripe id", stripeID);
@@ -37,8 +36,7 @@ exports.handler = async function (event, context) {
 };
 
 const getStripeIDFromSupabase = async function (accessToken) {
-  console.warn("get stripe id from supabase has been called");
-  const uh = await axios
+  await axios
     .get("https://uavpsmlmcsfcplfxuubi.supabase.co/rest/v1/stripe_customers", {
       headers: {
         apikey: process.env.SUPA_ANON_KEY,
@@ -46,13 +44,24 @@ const getStripeIDFromSupabase = async function (accessToken) {
       },
     })
     .then((response) => {
-      console.warn("this is the axios response", response);
+      if (response.status !== 200) {
+        throw new Error("response from supabase is not 200");
+      }
+
+      if (!response.data || response.data.length !== 1) {
+        throw new Error("data is either missing, or more than one row");
+      }
+
+      if (!response.data[0].stripe_customer_id) {
+        throw new Error("stripe customer id is missing from response data");
+      }
+
+      return response.data[0].stripe_customer_id;
     })
     .catch((error) => {
       console.error("so axios errored: ", error);
+      return "";
     });
-
-  console.warn("got to the end of the axios func", uh);
 };
 
 const getStripeSessionLink = async function (stripeID) {
