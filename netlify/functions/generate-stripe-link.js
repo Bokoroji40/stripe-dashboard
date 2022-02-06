@@ -48,8 +48,8 @@ const getStripeIDFromSupabase = async function (accessToken) {
     {
       method: "GET",
       headers: {
-        apikey: accessToken,
-        Authorization: "Bearer " + process.env.SUPA_ANON_KEY,
+        apikey: process.env.SUPA_ANON_KEY,
+        Authorization: "Bearer " + accessToken,
       },
     },
     (res) => {
@@ -63,6 +63,9 @@ const getStripeIDFromSupabase = async function (accessToken) {
       });
       res.on("end", () => {
         console.log("No more data in response.");
+
+        console.log("the entire data is this");
+        console.warn(rdata);
 
         return rdata;
       });
