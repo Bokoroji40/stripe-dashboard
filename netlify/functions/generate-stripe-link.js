@@ -38,7 +38,7 @@ exports.handler = async function (event, context) {
 
 const getStripeIDFromSupabase = async function (accessToken) {
   console.warn("get stripe id from supabase has been called");
-  axios
+  const uh = await axios
     .get("https://uavpsmlmcsfcplfxuubi.supabase.co/rest/v1/stripe_customers", {
       headers: {
         apikey: process.env.SUPA_ANON_KEY,
@@ -51,7 +51,8 @@ const getStripeIDFromSupabase = async function (accessToken) {
     .catch((error) => {
       console.error("so axios errored: ", error);
     });
-  console.warn("got to the end of the axios func");
+
+  console.warn("got to the end of the axios func", uh);
 };
 
 const getStripeSessionLink = async function (stripeID) {
