@@ -25,8 +25,6 @@ exports.handler = async function (event, context) {
   const stripeID = await getStripeIDFromSupabase(accessToken);
   const link = await getStripeSessionLink(stripeID);
 
-  console.log("this is the link that came back", link);
-
   return {
     statusCode: 200,
     body: JSON.stringify({ link: link }),
@@ -37,7 +35,7 @@ const getStripeIDFromSupabase = async function (accessToken) {
   console.log("starting axios await");
   let custID = "";
   await axios
-    .get("https://uavpsmlmcsfcplfxuubi.supabase.co/rest/v1/stripe_customers", {
+    .get(process.env.SUPA_URL + "/rest/v1/stripe_customers", {
       headers: {
         apikey: process.env.SUPA_ANON_KEY,
         Authorization: "Bearer " + accessToken,
