@@ -67,7 +67,7 @@ const getStripeIDFromSupabase = async function (accessToken) {
 const getStripeSessionLink = async function (stripeID) {
   const session = await stripe.billingPortal.sessions.create({
     customer: stripeID,
-    return_url: "https://jovial-borg-90bf04.netlify.app/",
+    return_url: process.env.FRONTEND_URL,
   });
 
   return session.url;
