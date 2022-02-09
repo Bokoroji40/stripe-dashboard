@@ -2,5 +2,8 @@
   "dependencies": {
     "axios": "^0.25.0",
     "stripe": "^8.202.0"
+  },
+  "devDependencies": {
+    "body-parser": "^1.19.1"
   }
 }
