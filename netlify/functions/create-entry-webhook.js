@@ -6,18 +6,19 @@ const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 exports.handler = async function (event, context) {
   console.log("context is this", context);
   console.log("event is this", event);
+  let customer = {};
   // Handle the event
   switch (event.type) {
     case "customer.created":
     case "customer.updated":
-      const customer = event.data.object;
+      customer = event.data.object;
       const success = upsertUser(customer.email, customer.id);
       if (!success) {
         console.error("could not create / update user :(");
       }
       break;
     case "customer.deleted":
-      const customer = event.data.object;
+      customer = event.data.object;
       console.info("deleting user happened, customer id is: " + customer.id);
     default:
       console.log(`Unhandled event type ${event.type}`);
