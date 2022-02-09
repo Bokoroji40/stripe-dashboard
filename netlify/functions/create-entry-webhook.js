@@ -12,7 +12,7 @@ exports.handler = async function (event, context) {
     case "customer.created":
     case "customer.updated":
       customer = event.data.object;
-      const success = upsertUser(customer.email, customer.id);
+      const success = await upsertUser(customer.email, customer.id);
       if (!success) {
         console.error("could not create / update user :(");
       }
@@ -30,7 +30,7 @@ exports.handler = async function (event, context) {
   };
 };
 
-const upsertUser = function (email, customer_id) {
+const upsertUser = async function (email, customer_id) {
   const requestData = {
     email: email,
     stripe_customer_id: customer_id,
@@ -62,7 +62,7 @@ const upsertUser = function (email, customer_id) {
   return status;
 };
 
-const deleteUser = function (email, customer_id) {
+const deleteUser = async function (email, customer_id) {
   const requestData = {
     email: email,
     stripe_customer_id: customer_id,
