@@ -75,6 +75,7 @@ exports.handler = async function (payload, context) {
 
 const upsertUser = async function (email, customer_id) {
   const upsertURL = new URL("/rest/v1/stripe_customers", process.env.SUPA_URL);
+  upsertURL.searchParams.append("on_conflict", "email");
 
   const requestData = {
     email: email,
@@ -82,6 +83,8 @@ const upsertUser = async function (email, customer_id) {
   };
 
   let errorNull = null;
+
+  console.info("the url", upsertURL.href);
 
   await axios
     .post(upsertURL.href, requestData, {
