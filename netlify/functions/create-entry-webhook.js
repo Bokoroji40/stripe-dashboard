@@ -1,13 +1,9 @@
 const axios = require("axios").default;
 const stripe = require("stripe")(process.env.STRIPE_API_KEY);
+const URL = require("url").URL;
 
 exports.handler = async function (payload, context) {
-  const body = JSON.parse(payload.body);
   const sig = payload.headers["stripe-signature"];
-
-  console.log("this is the body", payload.body);
-  console.log("this is the signature", sig);
-
   let event;
 
   try {
@@ -24,19 +20,24 @@ exports.handler = async function (payload, context) {
   }
 
   let customer = {};
-  // Handle the event
   switch (event.type) {
     case "customer.created":
     case "customer.updated":
       customer = event.data.object;
-      const success = await upsertUser(customer.email, customer.id);
-      if (!success) {
+      const error = await upsertUser(customer.email, customer.id);
+      if (error !== null) {
         console.error("could not create / update user :(");
+        return {
+          statusCode: 500,
+          body: JSON.stringify({ message: "could not create / update user" }),
+        };
       }
       break;
     case "customer.deleted":
       customer = event.data.object;
+      const error = await deleteUser(customer.id);
       console.info("deleting user happened, customer id is: " + customer.id);
+      break;
     default:
       console.log(`Unhandled event type ${event.type}`);
   }
@@ -52,7 +53,6 @@ const upsertUser = async function (email, customer_id) {
     email: email,
     stripe_customer_id: customer_id,
   };
-  let status = true;
 
   await axios
     .post(process.env.SUPA_URL + "/rest/v1/stripe_customers", requestData, {
@@ -72,26 +72,25 @@ const upsertUser = async function (email, customer_id) {
       }
     })
     .catch((error) => {
-      console.error("so axios errored: ", error);
-      status = false;
+      return error;
     });
 
-  return status;
+  return null;
 };
 
-const deleteUser = async function (email, customer_id) {
-  const requestData = {
-    email: email,
-    stripe_customer_id: customer_id,
-  };
+const deleteUser = async function (customer_id) {
   let status = true;
 
+  const myURL = new URL("/rest/v1/stripe_customers", process.env.SUPA_URL);
+  myURL.searchParams.append("stripe_customer_id", "eq." + customer_id);
+  console.info("href should be", myURL.href);
+
   await axios
-    .post(process.env.SUPA_URL + "/rest/v1/stripe_customers", requestData, {
+    .delete(process.env.SUPA_URL + "/rest/v1/stripe_customers", {
       headers: {
         apikey: process.env.SUPA_ANON_KEY,
         Authorization: "Bearer " + process.env.SUPA_DANGER_KEY,
-        Prefer: "resolution=merge-duplicates,return=representation",
+        Prefer: "return=representation",
       },
     })
     .then((response) => {
