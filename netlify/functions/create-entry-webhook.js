@@ -19,12 +19,13 @@ exports.handler = async function (payload, context) {
     };
   }
 
-  let customer = {};
+  let customer;
+  let error;
   switch (event.type) {
     case "customer.created":
     case "customer.updated":
       customer = event.data.object;
-      const error = await upsertUser(customer.email, customer.id);
+      error = await upsertUser(customer.email, customer.id);
       if (error !== null) {
         console.error("could not create / update user :(");
         return {
@@ -35,7 +36,7 @@ exports.handler = async function (payload, context) {
       break;
     case "customer.deleted":
       customer = event.data.object;
-      const error = await deleteUser(customer.id);
+      error = await deleteUser(customer.id);
       console.info("deleting user happened, customer id is: " + customer.id);
       break;
     default:
@@ -84,7 +85,7 @@ const deleteUser = async function (customer_id) {
   const myURL = new URL("/rest/v1/stripe_customers", process.env.SUPA_URL);
   myURL.searchParams.append("stripe_customer_id", "eq." + customer_id);
   console.info("href should be", myURL.href);
-
+  return;
   await axios
     .delete(process.env.SUPA_URL + "/rest/v1/stripe_customers", {
       headers: {
