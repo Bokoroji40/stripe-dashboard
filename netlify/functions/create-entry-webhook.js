@@ -81,6 +81,8 @@ const upsertUser = async function (email, customer_id) {
     stripe_customer_id: customer_id,
   };
 
+  let errorNull = null;
+
   await axios
     .post(upsertURL.href, requestData, {
       headers: {
@@ -100,19 +102,17 @@ const upsertUser = async function (email, customer_id) {
       }
     })
     .catch((error) => {
-      console.error("error returned: ", error);
-      return error;
+      errorNull = error;
     });
 
-  console.info("returning with null in upsertuser here");
-
-  return null;
+  return errorNull;
 };
 
 const deleteUser = async function (customer_id) {
   const deleteURL = new URL("/rest/v1/stripe_customers", process.env.SUPA_URL);
   deleteURL.searchParams.append("stripe_customer_id", "eq." + customer_id);
 
+  let errorNull = null;
   console.info("sending the request to this url: " + deleteURL.href);
 
   await axios
@@ -140,8 +140,8 @@ const deleteUser = async function (customer_id) {
       }
     })
     .catch((error) => {
-      return error;
+      errorNull = error;
     });
 
-  return null;
+  return errorNull;
 };
