@@ -95,7 +95,7 @@ const upsertUser = async function (email, customer_id) {
       },
     })
     .then((response) => {
-      console.warn("upsert response", response);
+      console.warn("upsert response status", response.status);
       if (response.status !== 200) {
         throw new Error("response from supabase is not 200");
       }
