@@ -62,13 +62,15 @@ exports.handler = async function (payload, context) {
 };
 
 const upsertUser = async function (email, customer_id) {
+  const upsertURL = new URL("/rest/v1/stripe_customers", process.env.SUPA_URL);
+
   const requestData = {
     email: email,
     stripe_customer_id: customer_id,
   };
 
   await axios
-    .post(process.env.SUPA_URL + "/rest/v1/stripe_customers", requestData, {
+    .post(upsertURL.href, requestData, {
       headers: {
         apikey: process.env.SUPA_ANON_KEY,
         Authorization: "Bearer " + process.env.SUPA_DANGER_KEY,
