@@ -36,6 +36,9 @@ exports.handler = async function (payload, context) {
           }),
         };
       }
+
+      console.info("entry to upsert customer " + customer.id + " succeeded");
+
       break;
     case "customer.deleted":
       customer = event.data.object;
@@ -50,6 +53,7 @@ exports.handler = async function (payload, context) {
           }),
         };
       }
+      console.info("entry to delete customer " + customer.id + " succeeded");
       break;
     default:
       console.log(`Unhandled event type ${event.type}`);
@@ -97,8 +101,10 @@ const deleteUser = async function (customer_id) {
   const deleteURL = new URL("/rest/v1/stripe_customers", process.env.SUPA_URL);
   deleteURL.searchParams.append("stripe_customer_id", "eq." + customer_id);
 
+  console.info("sending the request to this url: " + deleteURL.href);
+
   await axios
-    .delete(deleteURL, {
+    .delete(deleteURL.href, {
       headers: {
         apikey: process.env.SUPA_ANON_KEY,
         Authorization: "Bearer " + process.env.SUPA_DANGER_KEY,
