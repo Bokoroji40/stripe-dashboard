@@ -1,11 +1,25 @@
 const axios = require("axios").default;
 const stripe = require("stripe")(process.env.STRIPE_API_KEY);
-const bodyParser = require("body-parser");
-const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
-exports.handler = async function (event, context) {
-  console.log("context is this", context);
-  console.log("event is this", event);
+exports.handler = async function (payload, context) {
+  const body = JSON.parse(payload.body);
+  const sig = payload.headers["stripe-signature"];
+
+  console.log("this is the body", body);
+  console.log("this is the signature", sig);
+
+  let event;
+
+  try {
+    event = stripe.webhooks.constructEvent(
+      request.body,
+      sig,
+      process.env.STRIPE_WEBHOOK_SECRET,
+    );
+  } catch (err) {
+    response.status(400).send(`Webhook Error: ${err.message}`);
+  }
+
   let customer = {};
   // Handle the event
   switch (event.type) {
