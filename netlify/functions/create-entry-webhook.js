@@ -30,14 +30,26 @@ exports.handler = async function (payload, context) {
         console.error("could not create / update user :(");
         return {
           statusCode: 500,
-          body: JSON.stringify({ message: "could not create / update user" }),
+          body: JSON.stringify({
+            message: "could not create / update user",
+            error: error.message,
+          }),
         };
       }
       break;
     case "customer.deleted":
       customer = event.data.object;
       error = await deleteUser(customer.id);
-      console.info("deleting user happened, customer id is: " + customer.id);
+      if (error != null) {
+        console.error("could not delete user :(");
+        return {
+          statusCode: 500,
+          body: JSON.stringify({
+            message: "could not delete user",
+            error: error.message,
+          }),
+        };
+      }
       break;
     default:
       console.log(`Unhandled event type ${event.type}`);
@@ -45,7 +57,7 @@ exports.handler = async function (payload, context) {
 
   return {
     statusCode: 200,
-    body: "all good",
+    body: JSON.stringify({ message: "Ok" }),
   };
 };
 
@@ -80,14 +92,11 @@ const upsertUser = async function (email, customer_id) {
 };
 
 const deleteUser = async function (customer_id) {
-  let status = true;
+  const deleteURL = new URL("/rest/v1/stripe_customers", process.env.SUPA_URL);
+  deleteURL.searchParams.append("stripe_customer_id", "eq." + customer_id);
 
-  const myURL = new URL("/rest/v1/stripe_customers", process.env.SUPA_URL);
-  myURL.searchParams.append("stripe_customer_id", "eq." + customer_id);
-  console.info("href should be", myURL.href);
-  return;
   await axios
-    .delete(process.env.SUPA_URL + "/rest/v1/stripe_customers", {
+    .delete(deleteURL, {
       headers: {
         apikey: process.env.SUPA_ANON_KEY,
         Authorization: "Bearer " + process.env.SUPA_DANGER_KEY,
@@ -99,14 +108,20 @@ const deleteUser = async function (customer_id) {
         throw new Error("response from supabase is not 200");
       }
 
+      if (response.data && response.data.length === 0) {
+        console.info(
+          "we had no record of customer in supabase: " + customer_id,
+        );
+        return;
+      }
+
       if (!response.data || response.data.length !== 1) {
         throw new Error("data is either missing, or more than one row");
       }
     })
     .catch((error) => {
-      console.error("so axios errored: ", error);
-      status = false;
+      return error;
     });
 
-  return status;
+  return null;
 };
