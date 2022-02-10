@@ -12,12 +12,15 @@ exports.handler = async function (payload, context) {
 
   try {
     event = stripe.webhooks.constructEvent(
-      request.body,
+      body,
       sig,
       process.env.STRIPE_WEBHOOK_SECRET,
     );
   } catch (err) {
-    response.status(400).send(`Webhook Error: ${err.message}`);
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ message: err.message }),
+    };
   }
 
   let customer = {};
