@@ -5,14 +5,14 @@ exports.handler = async function (payload, context) {
   const body = JSON.parse(payload.body);
   const sig = payload.headers["stripe-signature"];
 
-  console.log("this is the body", body);
+  console.log("this is the body", payload.body);
   console.log("this is the signature", sig);
 
   let event;
 
   try {
     event = stripe.webhooks.constructEvent(
-      body,
+      payload.body,
       sig,
       process.env.STRIPE_WEBHOOK_SECRET,
     );
