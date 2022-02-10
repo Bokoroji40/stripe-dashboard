@@ -19,6 +19,8 @@ exports.handler = async function (payload, context) {
     };
   }
 
+  console.log("signature verification was okay");
+
   let customer;
   let error;
   switch (event.type) {
@@ -37,7 +39,13 @@ exports.handler = async function (payload, context) {
         };
       }
 
-      console.info("entry to upsert customer " + customer.id + " succeeded");
+      console.info(
+        "entry to upsert customer " +
+          customer.id +
+          " at event " +
+          event.type +
+          " succeeded",
+      );
 
       break;
     case "customer.deleted":
@@ -82,6 +90,7 @@ const upsertUser = async function (email, customer_id) {
       },
     })
     .then((response) => {
+      console.warn("upsert response", response);
       if (response.status !== 200) {
         throw new Error("response from supabase is not 200");
       }
@@ -91,8 +100,11 @@ const upsertUser = async function (email, customer_id) {
       }
     })
     .catch((error) => {
+      console.error("error returned: ", error);
       return error;
     });
+
+  console.info("returning with null in upsertuser here");
 
   return null;
 };
