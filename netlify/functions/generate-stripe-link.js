@@ -51,21 +51,17 @@ const getStripeIDFromSupabase = async function (accessToken) {
         throw new Error("data is either missing, or empty array");
       }
 
-      custID = response.data.reduce(customerIDCollector);
+      custID = [];
+
+      for (const cust_record of response.data) {
+        custID.push(cust_record / stripe_cusomter_id);
+      }
     })
     .catch((error) => {
       console.error("so axios errored: ", error);
     });
 
   return custID;
-};
-
-const customerIDCollector = function (previous, current) {
-  if (current.stripe_customer_id) {
-    previous.push(current.stripe);
-  }
-
-  return previous;
 };
 
 const getStripeSessionLink = async function (stripeIDs) {
