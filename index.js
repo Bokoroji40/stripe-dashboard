@@ -27,9 +27,8 @@ supabase.auth.onAuthStateChange(async (event, session) => {
     });
 
     const result = await response.json();
-    console.log("wait, what IS response?", result);
-    displayLinks(result);
-    console.log("thingy", result);
+
+    displayLinks(result.links);
   }
 });
 
