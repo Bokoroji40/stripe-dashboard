@@ -3,13 +3,14 @@ var SUPABASE_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJvbGUiOiJhbm9uIiwiaWF0IjoxNjQzMTI5NTc1LCJleHAiOjE5NTg3MDU1NzV9.e0aZ2SUi8lpURmx72EmqKSZgvmAUYazp28Tus7PKl6Y";
 
 var supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+var signUpForm = document.querySelector("#sbform");
+var linksDiv = document.querySelector("#the-links");
+var linksNum = linksDiv.querySelector(".num");
+var linksLi = linksDiv.querySelector("li");
 
 document.addEventListener("DOMContentLoaded", function (event) {
-  var signUpForm = document.querySelector("#sbform");
   signUpForm.onsubmit = signIn.bind(signUpForm);
 });
-
-console.log("why are we reloading things");
 
 supabase.auth.onAuthStateChange(async (event, session) => {
   console.log("something happened here, woo", event, session);
@@ -22,9 +23,20 @@ supabase.auth.onAuthStateChange(async (event, session) => {
 
     const result = await response.json();
 
+    displayLinks(result);
     console.log("thingy", result);
   }
 });
+
+const displayLinks = (payload) => {
+  linksNum.SetHTML(payload.length);
+  let lx = "";
+  for (const line in payload) {
+    lx += '<li><a href="' + line.url + '">' + line.customer + "</a></li>";
+  }
+
+  linksLi.SetHTML(lx);
+};
 
 const signIn = (event) => {
   event.preventDefault();
