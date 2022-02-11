@@ -57,13 +57,16 @@ const getStripeIDFromSupabase = async function (accessToken) {
 
       for (const cust_record of response.data) {
         console.log("cust record", cust_record);
+        console.log("\npushing", cust_record.stripe_cusomter_id);
         custID.push(cust_record.stripe_cusomter_id);
       }
+      console.log("this is custID after the loop", custID);
     })
     .catch((error) => {
       console.error("so axios errored: ", error);
     });
 
+  console.info("returning custID, hopefully after the loop?", custID);
   return custID;
 };
 
