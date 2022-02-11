@@ -75,7 +75,7 @@ exports.handler = async function (payload, context) {
 
 const upsertUser = async function (email, customer_id) {
   const upsertURL = new URL("/rest/v1/stripe_customers", process.env.SUPA_URL);
-  upsertURL.searchParams.append("on_conflict", "email");
+  upsertURL.searchParams.append("on_conflict", "stripe_customer_id");
 
   const requestData = {
     email: email,
