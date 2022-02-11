@@ -53,7 +53,10 @@ const getStripeIDFromSupabase = async function (accessToken) {
 
       custID = [];
 
+      console.log("repsonse data is", response.data);
+
       for (const cust_record of response.data) {
+        console.log("cust record", cust_record);
         custID.push(cust_record.stripe_cusomter_id);
       }
     })
