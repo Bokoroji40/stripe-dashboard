@@ -27,13 +27,13 @@ exports.handler = async function (event, context) {
 
   return {
     statusCode: 200,
-    body: JSON.stringify({ link: link }),
+    body: JSON.stringify({ links: link }),
   };
 };
 
 const getStripeIDFromSupabase = async function (accessToken) {
-  console.log("starting axios await");
-  let custID = "";
+  let custID = [];
+
   await axios
     .get(process.env.SUPA_URL + "/rest/v1/stripe_customers", {
       headers: {
@@ -47,21 +47,25 @@ const getStripeIDFromSupabase = async function (accessToken) {
         throw new Error("response from supabase is not 200");
       }
 
-      if (!response.data || response.data.length !== 1) {
-        throw new Error("data is either missing, or more than one row");
+      if (!response.data || response.data.length === 0) {
+        throw new Error("data is either missing, or empty array");
       }
 
-      if (!response.data[0].stripe_customer_id) {
-        throw new Error("stripe customer id is missing from response data");
-      }
-      console.info("hm, returning from here is bad, setting custid");
-      custID = response.data[0].stripe_customer_id;
+      custID = response.data.reduce(customerIDCollector);
     })
     .catch((error) => {
       console.error("so axios errored: ", error);
     });
 
   return custID;
+};
+
+const customerIDCollector = function (previous, current) {
+  if (current.stripe_customer_id) {
+    previous.push(current.stripe);
+  }
+
+  return previous;
 };
 
 const getStripeSessionLink = async function (stripeID) {
