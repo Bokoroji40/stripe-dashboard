@@ -69,17 +69,16 @@ const customerIDCollector = function (previous, current) {
 };
 
 const getStripeSessionLink = async function (stripeIDs) {
-  let links = [];
+  let sessions = [];
 
-  const sessions = stripeIDs.reduce(async (previous, current) => {
+  for (const id of stripeIDs) {
     const session = await stripe.billingPortal.sessions.create({
-      customer: current,
+      customer: id,
       return_url: process.env.FRONTEND_URL,
     });
 
-    previous.push(session);
-    return previous;
-  }, links);
+    sessions.push(session);
+  }
 
   return sessions;
 };
