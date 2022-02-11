@@ -9,8 +9,10 @@ document.addEventListener("DOMContentLoaded", function (event) {
   signUpForm.onsubmit = signIn.bind(signUpForm);
 });
 
+console.log("why are we reloading things");
+
 supabase.auth.onAuthStateChange(async (event, session) => {
-  console.log("something happened here, woo");
+  console.log("something happened here, woo", event, session);
   if ("SIGNED_IN" === event) {
     console.log("access token is", session.access_token);
     const response = await fetch("/.netlify/functions/generate-stripe-link", {
@@ -31,11 +33,16 @@ const signIn = (event) => {
   supabase.auth
     .signIn({ email })
     .then((response) => {
-      console.log(response);
+      console.log("supabase auth response", response);
 
-      response.error ? alert(response.error.message) : setToken(response);
+      if (response.error) {
+        alert(response.error.message);
+      } else {
+        setToken(response);
+      }
     })
     .catch((err) => {
+      console.log("supabase auth error");
       alert(err.response.text);
     });
 };
