@@ -54,7 +54,7 @@ const getStripeIDFromSupabase = async function (accessToken) {
       custID = [];
 
       for (const cust_record of response.data) {
-        custID.push(cust_record / stripe_cusomter_id);
+        custID.push(cust_record.stripe_cusomter_id);
       }
     })
     .catch((error) => {
