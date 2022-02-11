@@ -19,8 +19,6 @@ exports.handler = async function (payload, context) {
     };
   }
 
-  console.log("signature verification was okay");
-
   let customer;
   let error;
   switch (event.type) {
@@ -29,7 +27,6 @@ exports.handler = async function (payload, context) {
       customer = event.data.object;
       error = await upsertUser(customer.email, customer.id);
       if (error !== null) {
-        console.error("could not create / update user :(");
         return {
           statusCode: 500,
           body: JSON.stringify({
@@ -39,20 +36,11 @@ exports.handler = async function (payload, context) {
         };
       }
 
-      console.info(
-        "entry to upsert customer " +
-          customer.id +
-          " at event " +
-          event.type +
-          " succeeded",
-      );
-
       break;
     case "customer.deleted":
       customer = event.data.object;
       error = await deleteUser(customer.id);
       if (error != null) {
-        console.error("could not delete user :(");
         return {
           statusCode: 500,
           body: JSON.stringify({
@@ -61,10 +49,9 @@ exports.handler = async function (payload, context) {
           }),
         };
       }
-      console.info("entry to delete customer " + customer.id + " succeeded");
       break;
     default:
-      console.log(`Unhandled event type ${event.type}`);
+      console.warn(`Unhandled event type ${event.type}`);
   }
 
   return {
@@ -84,8 +71,6 @@ const upsertUser = async function (email, customer_id) {
 
   let errorNull = null;
 
-  console.info("the url", upsertURL.href);
-
   await axios
     .post(upsertURL.href, requestData, {
       headers: {
@@ -95,18 +80,15 @@ const upsertUser = async function (email, customer_id) {
       },
     })
     .then((response) => {
-      console.warn("upsert response status", response.status);
       if (response.status !== 200 && response.status !== 201) {
         throw new Error("response from supabase is not 200 or 201");
       }
 
       if (!response.data || response.data.length !== 1) {
-        console.log("no response data, or something", response.data);
         throw new Error("data is either missing, or more than one row");
       }
     })
     .catch((error) => {
-      console.log("there is an error", error);
       errorNull = error;
     });
 
@@ -118,7 +100,6 @@ const deleteUser = async function (customer_id) {
   deleteURL.searchParams.append("stripe_customer_id", "eq." + customer_id);
 
   let errorNull = null;
-  console.info("sending the request to this url: " + deleteURL.href);
 
   await axios
     .delete(deleteURL.href, {
@@ -134,9 +115,6 @@ const deleteUser = async function (customer_id) {
       }
 
       if (response.data && response.data.length === 0) {
-        console.info(
-          "we had no record of customer in supabase: " + customer_id,
-        );
         return;
       }
 
