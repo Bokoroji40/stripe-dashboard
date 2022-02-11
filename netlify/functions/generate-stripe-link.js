@@ -22,12 +22,12 @@ exports.handler = async function (event, context) {
     };
   }
 
-  const stripeID = await getStripeIDFromSupabase(accessToken);
-  const link = await getStripeSessionLink(stripeID);
+  const stripeIDs = await getStripeIDFromSupabase(accessToken);
+  const links = await getStripeSessionLink(stripeIDs);
 
   return {
     statusCode: 200,
-    body: JSON.stringify({ links: link }),
+    body: JSON.stringify({ links: links }),
   };
 };
 
@@ -68,11 +68,18 @@ const customerIDCollector = function (previous, current) {
   return previous;
 };
 
-const getStripeSessionLink = async function (stripeID) {
-  const session = await stripe.billingPortal.sessions.create({
-    customer: stripeID,
-    return_url: process.env.FRONTEND_URL,
-  });
+const getStripeSessionLink = async function (stripeIDs) {
+  let links = [];
 
-  return session.url;
+  const sessions = stripeIDs.reduce((previous, current) => {
+    const session = await stripe.billingPortal.sessions.create({
+      customer: current,
+      return_url: process.env.FRONTEND_URL,
+    });
+
+    previous.push(session);
+    return previous;
+  }, links);
+
+  return sessions;
 };
