@@ -57,8 +57,8 @@ const getStripeIDFromSupabase = async function (accessToken) {
 
       for (const cust_record of response.data) {
         console.log("cust record", cust_record);
-        console.log("\npushing", cust_record.stripe_cusomter_id);
-        custID.push(cust_record.stripe_cusomter_id);
+        console.log("\npushing", cust_record.stripe_customer_id);
+        custID.push(cust_record.stripe_customer_id);
       }
       console.log("this is custID after the loop", custID);
     })
