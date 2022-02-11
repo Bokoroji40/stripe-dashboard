@@ -67,7 +67,11 @@ const getStripeIDFromSupabase = async function (accessToken) {
 const getStripeSessionLink = async function (stripeIDs) {
   let sessions = [];
 
+  console.info("incoming stripe ids", stripeIDs);
+
   for (const id of stripeIDs) {
+    console.log("--- id: ", id);
+
     const session = await stripe.billingPortal.sessions.create({
       customer: id,
       return_url: process.env.FRONTEND_URL,
