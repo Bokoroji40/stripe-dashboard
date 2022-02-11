@@ -37,8 +37,12 @@ const displayLinks = (payload) => {
   linksNum.innerHTML = payload.length;
   let lx = "";
   for (const line in payload) {
+    console.log("this is line", line);
     lx += '<li><a href="' + line.url + '">' + line.customer + "</a></li>";
+    console.log("this is lx", lx);
   }
+
+  console.log("all done, lx is", lx);
 
   linksUl.innerHTML = lx;
 };
