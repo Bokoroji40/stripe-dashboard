@@ -12,6 +12,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 supabase.auth.onAuthStateChange(async (event, session) => {
   console.log("something happened here, woo");
   if ("SIGNED_IN" === event) {
+    console.log("access token is", session.access_token);
     const response = await fetch("/.netlify/functions/generate-stripe-link", {
       method: "POST",
       body: session.access_token,
@@ -19,10 +20,8 @@ supabase.auth.onAuthStateChange(async (event, session) => {
 
     const result = await response.json();
 
-    console.log("the response here is this", result);
-    return;
+    console.log("thingy", result);
   }
-  //   console.log(event, session);
 });
 
 const signIn = (event) => {
