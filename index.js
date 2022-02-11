@@ -27,7 +27,7 @@ supabase.auth.onAuthStateChange(async (event, session) => {
     });
 
     const result = await response.json();
-
+    console.log("wait, what IS response?", result);
     displayLinks(result);
     console.log("thingy", result);
   }
@@ -36,9 +36,9 @@ supabase.auth.onAuthStateChange(async (event, session) => {
 const displayLinks = (payload) => {
   linksNum.innerHTML = payload.length;
   let lx = "";
-  for (const line in payload) {
-    console.log("this is line", line);
-    lx += '<li><a href="' + line.url + '">' + line.customer + "</a></li>";
+  for (const [_, value] of Object.entries(payload)) {
+    console.log("this is line", value);
+    lx += '<li><a href="' + value.url + '">' + value.customer + "</a></li>";
     console.log("this is lx", lx);
   }
 
