@@ -9,11 +9,12 @@ var linksNum;
 var linksUl;
 
 document.addEventListener("DOMContentLoaded", function () {
-  signUpForm.onsubmit = signIn.bind(signUpForm);
   signUpForm = document.querySelector("#sbform");
   linksDiv = document.querySelector("#the-links");
   linksNum = linksDiv.querySelector("span.num");
   linksUl = linksDiv.querySelector("ul");
+
+  signUpForm.onsubmit = signIn.bind(signUpForm);
 });
 
 supabase.auth.onAuthStateChange(async (event, session) => {
