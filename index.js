@@ -34,13 +34,13 @@ supabase.auth.onAuthStateChange(async (event, session) => {
 });
 
 const displayLinks = (payload) => {
-  linksNum.SetHTML(payload.length);
+  linksNum.innerHTML = payload.length;
   let lx = "";
   for (const line in payload) {
     lx += '<li><a href="' + line.url + '">' + line.customer + "</a></li>";
   }
 
-  linksUl.SetHTML(lx);
+  linksUl.innerHTML = lx;
 };
 
 const signIn = (event) => {
