@@ -101,6 +101,7 @@ const upsertUser = async function (email, customer_id) {
       }
 
       if (!response.data || response.data.length !== 1) {
+        console.log("no response data, or something", response.data);
         throw new Error("data is either missing, or more than one row");
       }
     })
