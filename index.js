@@ -18,9 +18,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 supabase.auth.onAuthStateChange(async (event, session) => {
-  console.log("something happened here, woo", event, session);
   if ("SIGNED_IN" === event) {
-    console.log("access token is", session.access_token);
     const response = await fetch("/.netlify/functions/generate-stripe-link", {
       method: "POST",
       body: session.access_token,
@@ -36,12 +34,8 @@ const displayLinks = (payload) => {
   linksNum.innerHTML = payload.length;
   let lx = "";
   for (const [_, value] of Object.entries(payload)) {
-    console.log("this is line", value);
     lx += '<li><a href="' + value.url + '">' + value.customer + "</a></li>";
-    console.log("this is lx", lx);
   }
-
-  console.log("all done, lx is", lx);
 
   linksUl.innerHTML = lx;
 };
@@ -53,8 +47,6 @@ const signIn = (event) => {
   supabase.auth
     .signIn({ email })
     .then((response) => {
-      console.log("supabase auth response", response);
-
       if (response.error) {
         alert(response.error.message);
       } else {
