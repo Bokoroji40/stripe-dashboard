@@ -7,14 +7,18 @@ var signUpForm;
 var linksDiv;
 var linksNum;
 var linksUl;
+var signOutButton;
+var signedIn = false;
 
 document.addEventListener("DOMContentLoaded", function () {
   signUpForm = document.querySelector("#sbform");
   linksDiv = document.querySelector("#the-links");
   linksNum = linksDiv.querySelector("span.num");
   linksUl = linksDiv.querySelector("ul");
+  signOutButton = signUpForm.querySelector('button[type="reset"]');
 
   signUpForm.onsubmit = signIn.bind(signUpForm);
+  signUpForm.onreset = signOut.bind(signUpForm);
 });
 
 supabase.auth.onAuthStateChange(async (event, session) => {
@@ -24,9 +28,15 @@ supabase.auth.onAuthStateChange(async (event, session) => {
       body: session.access_token,
     });
 
+    signOutButton.disabled = false;
+
     const result = await response.json();
 
     displayLinks(result.links);
+  }
+
+  if ("SIGNED_OUT" === event) {
+    signOutButton.disabled = true;
   }
 });
 
@@ -40,6 +50,17 @@ const displayLinks = (payload) => {
   linksUl.innerHTML = lx;
 };
 
+const signOut = (event) => {
+  event.target[0].value = "";
+  supabase.auth
+    .signOut()
+    .then(() => {
+      console.warn("signed out successfully");
+    })
+    .catch((err) => {
+      console.error("error while signing out", err);
+    });
+};
 const signIn = (event) => {
   event.preventDefault();
   const email = event.target[0].value;
