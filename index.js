@@ -37,6 +37,7 @@ supabase.auth.onAuthStateChange(async (event, session) => {
 
   if ("SIGNED_OUT" === event) {
     signOutButton.disabled = true;
+    displayLinks({});
   }
 });
 
