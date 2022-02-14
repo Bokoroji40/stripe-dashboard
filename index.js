@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 supabase.auth.onAuthStateChange(async (event, session) => {
   if ("SIGNED_IN" === event) {
-    const response = await fetch("/.netlify/functions/generate-stripe-link", {
+    const response = await fetch("/.netlify/functions/generate-stripe-links", {
       method: "POST",
       body: session.access_token,
     });
