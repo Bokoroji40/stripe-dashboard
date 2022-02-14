@@ -50,8 +50,6 @@ const getStripeIDFromSupabase = async function (accessToken) {
         throw new Error("data is either missing, or empty array");
       }
 
-      custID = [];
-
       for (const cust_record of response.data) {
         custID.push(cust_record.stripe_customer_id);
       }
