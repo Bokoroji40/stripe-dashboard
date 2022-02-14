@@ -59,24 +59,13 @@ const signIn = (event) => {
     .signIn({ email })
     .then((response) => {
       if (response.error) {
-        alert(response.error.message);
-      } else {
-        setToken(response);
+        throw new Error("signin error: " + response.error.message);
       }
     })
     .catch((err) => {
-      console.log("supabase auth error");
-      alert(err.response.text);
+      console.error(err.response.text);
     });
 };
-
-function setToken(response) {
-  if (response.user.confirmation_sent_at && !response?.session?.access_token) {
-    alert("Confirmation Email Sent");
-  } else {
-    alert("Logged in as " + response.user.email);
-  }
-}
 
 const signOut = (event) => {
   event.target[0].value = "";
