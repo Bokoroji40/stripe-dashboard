@@ -1,8 +1,8 @@
-var SUPABASE_URL = "https://uavpsmlmcsfcplfxuubi.supabase.co";
-var SUPABASE_KEY =
+const SUPABASE_URL = "https://uavpsmlmcsfcplfxuubi.supabase.co";
+const SUPABASE_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJvbGUiOiJhbm9uIiwiaWF0IjoxNjQzMTI5NTc1LCJleHAiOjE5NTg3MDU1NzV9.e0aZ2SUi8lpURmx72EmqKSZgvmAUYazp28Tus7PKl6Y";
 
-var supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 var signUpForm;
 var linksDiv;
 var linksNum;
@@ -51,17 +51,6 @@ const displayLinks = (payload) => {
   linksUl.innerHTML = lx;
 };
 
-const signOut = (event) => {
-  event.target[0].value = "";
-  supabase.auth
-    .signOut()
-    .then(() => {
-      console.warn("signed out successfully");
-    })
-    .catch((err) => {
-      console.error("error while signing out", err);
-    });
-};
 const signIn = (event) => {
   event.preventDefault();
   const email = event.target[0].value;
@@ -88,3 +77,15 @@ function setToken(response) {
     alert("Logged in as " + response.user.email);
   }
 }
+
+const signOut = (event) => {
+  event.target[0].value = "";
+  supabase.auth
+    .signOut()
+    .then(() => {
+      console.warn("signed out successfully");
+    })
+    .catch((err) => {
+      console.error("error while signing out", err);
+    });
+};
