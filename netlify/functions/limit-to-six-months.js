@@ -72,7 +72,7 @@ const limitSubscription = async function (subscription) {
     });
   } catch (err) {
     console.error("creating initial subscription schedule");
-    throw e;
+    throw err;
   }
 
   try {
