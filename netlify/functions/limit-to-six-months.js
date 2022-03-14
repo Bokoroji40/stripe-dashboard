@@ -11,6 +11,7 @@ exports.handler = async function (payload, context) {
       process.env.STRIPE_SUBSCRIPTION_WEBHOOK_SECRET,
     );
   } catch (err) {
+    console.error("catching the error", err);
     return {
       statusCode: 400,
       body: JSON.stringify({ message: err.message }),
