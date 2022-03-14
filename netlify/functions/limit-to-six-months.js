@@ -1,4 +1,4 @@
-const stripe = require("stripe")(process.env.STRIPE_API_KEY);
+const stripe = require("stripe")(process.env.STRIPE_SUB_API_KEY);
 
 exports.handler = async function (payload, context) {
   const sig = payload.headers["stripe-signature"];
