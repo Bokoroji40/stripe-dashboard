@@ -42,11 +42,12 @@ exports.handler = async function (payload, context) {
       try {
         error = await limitSubscription(subscription);
       } catch (err) {
+        console.warn("the error message", err);
         return {
           statusCode: 500,
           body: JSON.stringify({
             message: "could not limit subscription",
-            error: error.message,
+            error: err.message,
           }),
         };
       }
