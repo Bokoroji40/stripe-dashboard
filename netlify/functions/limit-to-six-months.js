@@ -87,7 +87,7 @@ const limitSubscription = async function (subscription) {
             },
           ],
           start_date: subscription.start_date,
-          iterations: 6,
+          iterations: 5,
         },
       ],
     });
