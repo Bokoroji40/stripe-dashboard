@@ -86,6 +86,7 @@ const limitSubscription = async function (subscription) {
               quantity: subscription.items.data[0].quantity,
             },
           ],
+          start_date: subscription.start_date,
           iterations: 6,
         },
       ],
