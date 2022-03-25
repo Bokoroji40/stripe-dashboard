@@ -1,8 +1,20 @@
 const crypto = require("crypto");
 const axios = require("axios").default;
 const stripe = require("stripe")(process.env.STRIPE_API_KEY);
+const CORS_HEADERS = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers":
+    "Origin, X-Requested-With, Content-Type, Accept",
+};
 
 exports.handler = async function (event, context) {
+  if (event.httpMethod === "OPTIONS") {
+    return {
+      statusCode: 200,
+      headers: CORS_HEADERS,
+    };
+  }
+
   accessToken = event.body;
   parts = accessToken.split(".");
 
@@ -18,6 +30,10 @@ exports.handler = async function (event, context) {
   if (hash !== signature) {
     return {
       statusCode: 403,
+      headers: {
+        ...CORS_HEADERS,
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({ message: "jwt signature verification failed" }),
     };
   }
@@ -27,7 +43,10 @@ exports.handler = async function (event, context) {
 
   return {
     statusCode: 200,
-    headers: { "access-control-allow-origin": "*" },
+    headers: {
+      ...CORS_HEADERS,
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify({ links: links }),
   };
 };
