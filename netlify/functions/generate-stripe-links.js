@@ -27,9 +27,6 @@ exports.handler = async function (event, context) {
     .update(header + "." + payload)
     .digest("base64url");
 
-  console.warn("hash: " + hash);
-  console.warn(" sig: " + signature);
-
   if (hash !== signature) {
     return {
       statusCode: 418,
