@@ -31,7 +31,7 @@ exports.handler = async function (event, context) {
 
   if (hash !== signature) {
     return {
-      statusCode: 401,
+      statusCode: 418,
       headers: {
         ...CORS_HEADERS,
         "Content-Type": "application/json",
