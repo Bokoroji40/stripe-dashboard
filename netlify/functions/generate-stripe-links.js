@@ -29,7 +29,7 @@ exports.handler = async function (event, context) {
 
   if (hash !== signature) {
     return {
-      statusCode: 418,
+      statusCode: 403,
       headers: {
         ...CORS_HEADERS,
         "Content-Type": "application/json",
@@ -40,6 +40,27 @@ exports.handler = async function (event, context) {
 
   const stripeIDs = await getStripeIDFromSupabase(accessToken);
   const links = await getStripeSessionLink(stripeIDs);
+
+  if (links.error) {
+    if (links.error.code == "resource_missing") {
+      return {
+        statusCode: 404,
+        headers: {
+          ...CORS_HEADERS,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ links: [] }),
+      };
+    }
+    return {
+      statusCode: 400,
+      headers: {
+        ...CORS_HEADERS,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ links: [] }),
+    };
+  }
 
   return {
     statusCode: 200,
@@ -84,14 +105,25 @@ const getStripeIDFromSupabase = async function (accessToken) {
 const getStripeSessionLink = async function (stripeIDs) {
   let sessions = [];
 
-  for (const id of stripeIDs) {
-    const session = await stripe.billingPortal.sessions.create({
-      customer: id,
-      return_url: process.env.FRONTEND_URL,
-    });
+  try {
+    for (const id of stripeIDs) {
+      const session = await stripe.billingPortal.sessions.create({
+        customer: id,
+        return_url: process.env.FRONTEND_URL,
+      });
 
-    sessions.push(session);
+      sessions.push(session);
+    }
+  } catch (error) {
+    console.error("call to Stripe failed with error: ", error);
+    return {
+      sessions: [],
+      error: error,
+    };
   }
 
-  return sessions;
+  return {
+    sessions: sessions,
+    error: null,
+  };
 };
